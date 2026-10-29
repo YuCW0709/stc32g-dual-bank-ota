@@ -217,7 +217,7 @@ COMMON/     与芯片无关：日志、CRC32、参数区、环形缓冲、OTA �
 DRV/        外部器件：AT 命令引擎（uart_at）、HTTP 下载引擎（http_ota）
 OTA/        OTA 业务：状态机、镜像校验/搬运、跳转、分区表
 Project/    Keil C251 工程（APP 与 Bootloader 两个 .uvproj）
-tools/      上位机脚本：构建守门 / 打镜像 / 发布体检 / 串口桥接 / 日志分析
+tools/      上位机脚本：构建守门 / 打镜像 / 发布体检 / 串口桥接 / 日志分析 / 仓库元信息
 build/      当前交付：合并 hex + OTA 镜像
 ```
 
