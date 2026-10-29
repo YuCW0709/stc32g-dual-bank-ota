@@ -1,0 +1,848 @@
+$NOMACRO
+$MODSRC
+$MODEL(4)
+$CASE
+
+;
+; 'OTA/ota_jump.SRC' generated from 'OTA/ota_jump.c'
+; COMPILER INVOKED BY:
+;        C:\KEIL_V5\C251\BIN\C251.EXE OTA/ota_jump.c ROM(HUGE) DEBUG TABS(2) LARGE DEFINE(OTA_PTR_GENERIC=1) INCDIR(COMMON) INCDIR(BSP) INCDIR(OTA) INCDIR(DRV) INCDIR(C:/KEIL_V5/C251/INC/STC) PRINT(tools/_asm/ota_jump.lst) OBJECT(tools/_asm/ota_jump.obj) SRC CODE
+;
+                NAME ota_jump
+
+        EXTRN         ECODE : FAR (bsp_timer_delay_ms?)
+        EXTRN         ECODE : FAR (log_printf?)
+        EXTRN         XDATA : BYTE (?log_printf??BYTE)
+        EXTRN         ECODE : FAR (flash_iap_read_byte?)
+        EXTRN         ECODE : FAR (bsp_uart_tx_wait_idle?)
+
+             ?HC?OTA_JUMP  SEGMENT  HCONST  
+             ?PR?OTA_JUMP  SEGMENT  ECODE  
+             ?XD?OTA_JUMP  SEGMENT  XDATA  
+?XD?OTA_JUMP_TO_APP??OTA_JUMP  SEGMENT  XDATA OVERLAYABLE (ota_jump_to_app?) 
+
+        RSEG       ?XD?OTA_JUMP
+           s_isr:  DS   192
+
+        RSEG       ?XD?OTA_JUMP_TO_APP??OTA_JUMP
+    app_base?740:  DSD  1
+       first?741:  DSB  1
+
+
+        RSEG       ?HC?OTA_JUMP
+
+?SC_0000:         DB  '-' ,'>' ,' ' ,'0' ,'x' ,025H,'l' ,'x' ,000H
+
+?SC_0009:         DB  'a' ,'p' ,'p' ,' ' ,'h' ,'e' ,'a' ,'d' ,':' ,' ' 
+        DB  025H,'x' ,' ' ,025H,'x' ,' ' ,025H,'x' ,' ' ,025H
+        DB  'x' ,000H
+
+?SC_0031:         DB  'a' ,'p' ,'p' ,' ' ,'h' ,'e' ,'a' ,'d' ,'=' ,'0' 
+        DB  'x' ,025H,'x' ,',' ,' ' ,'b' ,'l' ,'a' ,'n' ,'k' 
+        DB  '/' ,'e' ,'r' ,'a' ,'s' ,'e' ,'d' ,' ' ,'-' ,'>' 
+        DB  ' ' ,'r' ,'e' ,'f' ,'u' ,'s' ,'e' ,000H
+
+?SC_0069:         DB  'b' ,'a' ,'d' ,' ' ,'e' ,'n' ,'t' ,'r' ,'y' ,' ' 
+        DB  '0' ,'x' ,025H,'l' ,'x' ,000H
+
+?SC_0085:         DB  'J' ,'U' ,'M' ,'P' ,000H
+
+;--- special function registers and bits:
+           T2_CT  BIT   08EH.3
+            P0M0  DATA  094H
+           SPDAT  DATA  0CFH
+           T1_CT  BIT   089H.6
+           PLINH  BIT   0F9H.3
+           T0_CT  BIT   089H.2
+         V33TRIM  DATA  0A3H
+            ?PSW  DATA  0D0H
+           LINDR  DATA  0FBH
+           PCMPH  BIT   0B6H.5
+           LINEN  BIT   097H.0
+           EAXFR  BIT   0BAH.7
+           LINAR  DATA  0FAH
+         IRCBAND  DATA  09DH
+             ?F0  BIT   0D0H.5
+           CMPOE  BIT   0E6H.1
+           CMPEN  BIT   0E6H.7
+           AUXR2  DATA  097H
+           LINIF  BIT   0F9H.2
+        IAP_TRIG  DATA  0C6H
+           LINIE  BIT   0F9H.1
+           CMPIF  BIT   0E6H.6
+           SADDR  DATA  0A9H
+           CKCON  DATA  0EAH
+           PCANL  BIT   0F1H.0
+           IAPEN  BIT   0C7H.7
+           DMAIR  DATA  0EDH
+           S1BRT  BIT   08EH.0
+           S4REN  BIT   0FDH.4
+           S3REN  BIT   0ACH.4
+           SADEN  DATA  0B9H
+             SPH  DATA  085H
+           S2REN  BIT   09AH.4
+             PSH  BIT   0B7H.4
+        WDT_FLAG  BIT   0C1H.7
+        AUXINTIF  DATA  0EFH
+           PCANH  BIT   0F1H.3
+         CAN2_S1  BIT   0BBH.1
+           S1_S1  BIT   0A2H.7
+         CAN2_S0  BIT   0BBH.0
+           S4CON  DATA  0FDH
+           S1_S0  BIT   0A2H.6
+           S3CON  DATA  0ACH
+             DPS  DATA  0E3H
+           PI2SH  BIT   0EEH.3
+           CANEN  BIT   097H.1
+           S2CON  DATA  09AH
+          VRTRIM  DATA  0A6H
+             POF  BIT   087H.4
+             REN  BIT   098H.4
+          USBRST  BIT   0F4H.6
+           DFREC  BIT   0F4H.2
+           S4BUF  DATA  0FEH
+           SMOD0  BIT   087H.6
+           S3BUF  DATA  0ADH
+           T4x12  BIT   0DDH.5
+           T1_M1  BIT   089H.5
+           S2BUF  DATA  09BH
+          CMPO_S  BIT   0BAH.3
+          EN_WDT  BIT   0C1H.5
+           T3x12  BIT   0DDH.1
+           S4ST4  BIT   0FDH.6
+           T1_M0  BIT   089H.4
+           T0_M1  BIT   089H.1
+           T2x12  BIT   08EH.2
+           CANIF  BIT   0F1H.2
+           T0_M0  BIT   089H.0
+           T1x12  BIT   08EH.6
+           S3ST3  BIT   0ACH.6
+             IPH  DATA  0B7H
+           PADCH  BIT   0B7H.5
+          SPSTAT  DATA  0CDH
+           CANIE  BIT   0F1H.1
+            ?DPL  DATA  082H
+           T0x12  BIT   08EH.7
+        ADC_RESL  DATA  0BEH
+             PIE  BIT   0E6H.5
+           T4T3M  DATA  0DDH
+            ?DPH  DATA  083H
+             PX4  BIT   0B5H.4
+             NIE  BIT   0E6H.4
+             T4R  BIT   0DDH.7
+           S4SM2  BIT   0FDH.5
+             IDL  BIT   087H.0
+          IRTRIM  DATA  09FH
+           S3SM2  BIT   0ACH.5
+             PX1  BIT   0B8H.2
+             T3R  BIT   0DDH.3
+             T2R  BIT   08EH.4
+           S2SM2  BIT   09AH.5
+             PX0  BIT   0B8H.0
+       WDT_CONTR  DATA  0C1H
+           S4SM0  BIT   0FDH.7
+             TR1  BIT   088H.6
+           S2SM1  BIT   09AH.6
+           S3SM0  BIT   0ACH.7
+           PI2CH  BIT   0B6H.6
+        S2SPI_S1  BIT   0BBH.5
+             PS4  BIT   0DFH.1
+             TR0  BIT   088H.4
+           S2SM0  BIT   09AH.7
+        S2SPI_S0  BIT   0BBH.4
+        S1SPI_S1  BIT   0BBH.3
+        IAP_DATA  DATA  0C2H
+            ?RS1  BIT   0D0H.4
+             PS3  BIT   0DFH.0
+           S4TB8  BIT   0FDH.3
+           S3TB8  BIT   0ACH.3
+             PS2  BIT   0B5H.0
+             PT1  BIT   0B8H.3
+        S1SPI_S0  BIT   0BBH.2
+            ?RS0  BIT   0D0H.3
+           S2TB8  BIT   09AH.3
+             PT0  BIT   0B8H.1
+             T4L  DATA  0D3H
+           S4RB8  BIT   0FDH.2
+          EXTRAM  BIT   08EH.1
+           S3RB8  BIT   0ACH.2
+             T3L  DATA  0D5H
+          RESFMT  BIT   0DEH.5
+            WTST  DATA  0E9H
+             SM2  BIT   098H.5
+           S2RB8  BIT   09AH.2
+        CMD_FAIL  BIT   0C7H.4
+             T2L  DATA  0D7H
+             TL1  DATA  08BH
+             EX4  BIT   08FH.6
+             SM1  BIT   098H.6
+          SPI_S1  BIT   0A2H.3
+             TL0  DATA  08AH
+             EX3  BIT   08FH.5
+             SM0  BIT   098H.7
+          SPI_S0  BIT   0A2H.2
+          PPWMBH  BIT   0B6H.3
+             T4H  DATA  0D2H
+             EX2  BIT   08FH.4
+          PPWMAH  BIT   0B6H.2
+              ?P  BIT   0D0H.0
+             T3H  DATA  0D4H
+             IT1  BIT   088H.2
+             TB8  BIT   098H.3
+             EX1  BIT   0A8H.2
+             T2H  DATA  0D6H
+             IT0  BIT   088H.0
+             TH1  DATA  08DH
+          USBCKS  BIT   09DH.7
+             EX0  BIT   0A8H.0
+             ET4  BIT   0AFH.6
+             TH0  DATA  08CH
+             RB8  BIT   098H.2
+             ET3  BIT   0AFH.5
+             ES4  BIT   0AFH.4
+             IP3  DATA  0DFH
+          CMPRES  BIT   0E6H.0
+          USBCON  DATA  0F4H
+             TF1  BIT   088H.7
+             ES3  BIT   0AFH.3
+             ET2  BIT   0AFH.2
+             IP2  DATA  0B5H
+          RSTCFG  DATA  0FFH
+             TF0  BIT   088H.5
+             ET1  BIT   0A8H.3
+             ES2  BIT   0AFH.0
+             ET0  BIT   0A8H.1
+          LIN_S1  BIT   0A2H.1
+          DISFLT  BIT   0E7H.6
+          LIN_S0  BIT   0A2H.0
+          BGTRIM  DATA  0A5H
+            MSTR  BIT   0CEH.4
+            ?ACC  DATA  0E0H
+          USBCLK  DATA  0DCH
+          USBDAT  DATA  0ECH
+        ADC_FLAG  BIT   0BCH.5
+       IAP_CONTR  DATA  0C7H
+          LINICR  DATA  0F9H
+          USBADR  DATA  0FCH
+            AUXR  DATA  08EH
+              ?B  DATA  0F0H
+             IE2  DATA  0AFH
+            SWBS  BIT   0C7H.6
+             IE1  BIT   088H.3
+            MXAX  DATA  0EBH
+             GF1  BIT   087H.3
+             IE0  BIT   088H.1
+        HIRCSEL1  BIT   09DH.1
+       BUS_SPEED  DATA  0A1H
+             P77  BIT   0F8H.7
+             GF0  BIT   087H.2
+        HIRCSEL0  BIT   09DH.0
+            PSPI  BIT   0B5H.1
+             P67  BIT   0E8H.7
+             P76  BIT   0F8H.6
+             P57  BIT   0C8H.7
+             P66  BIT   0E8H.6
+             P75  BIT   0F8H.5
+            PUSB  BIT   0B5H.7
+             P47  BIT   0C0H.7
+             P56  BIT   0C8H.6
+             P65  BIT   0E8H.5
+             P74  BIT   0F8H.4
+             P37  BIT   0B0H.7
+            S4_S  BIT   0BAH.2
+             P46  BIT   0C0H.6
+             P55  BIT   0C8H.5
+            PRTC  BIT   0DFH.2
+             P64  BIT   0E8H.4
+             P73  BIT   0F8H.3
+            DPXL  DATA  084H
+             P27  BIT   0A0H.7
+             P36  BIT   0B0H.6
+            S3_S  BIT   0BAH.1
+       ADC_START  BIT   0BCH.6
+             P45  BIT   0C0H.5
+             P54  BIT   0C8H.4
+             P63  BIT   0E8H.3
+            PUEN  BIT   0F4H.4
+             P72  BIT   0F8H.2
+             P17  BIT   090H.7
+          CANSEL  BIT   097H.3
+             P26  BIT   0A0H.6
+             P35  BIT   0B0H.5
+            S2_S  BIT   0BAH.0
+       ADC_POWER  BIT   0BCH.7
+       ADC_EPWMT  BIT   0BCH.4
+             P44  BIT   0C0H.4
+             P53  BIT   0C8H.3
+             P62  BIT   0E8H.2
+             P71  BIT   0F8H.1
+             P07  BIT   080H.7
+             P16  BIT   090H.6
+             P25  BIT   0A0H.5
+          CAN_S1  BIT   0A2H.5
+             P34  BIT   0B0H.4
+            PLVD  BIT   0B8H.6
+             P43  BIT   0C0H.3
+             P52  BIT   0C8H.2
+            SSIG  BIT   0CEH.7
+            SPEN  BIT   0CEH.6
+             P61  BIT   0E8H.1
+             P70  BIT   0F8H.0
+             P06  BIT   080H.6
+             P15  BIT   090H.5
+             P24  BIT   0A0H.4
+          CAN_S0  BIT   0A2H.4
+             P33  BIT   0B0H.3
+             P42  BIT   0C0H.2
+             P51  BIT   0C8H.1
+            WCOL  BIT   0CDH.6
+             P60  BIT   0E8H.0
+             P05  BIT   080H.5
+            TCON  DATA  088H
+            TMOD  DATA  089H
+             P14  BIT   090H.4
+             P23  BIT   0A0H.3
+             P32  BIT   0B0H.2
+             P41  BIT   0C0H.1
+             P50  BIT   0C8H.0
+             P04  BIT   080H.4
+            SMOD  BIT   087H.7
+             P13  BIT   090H.3
+            SCON  DATA  098H
+             P22  BIT   0A0H.2
+             P31  BIT   0B0H.1
+             P40  BIT   0C0H.0
+          P54RST  BIT   0FFH.4
+             P03  BIT   080H.3
+             P12  BIT   090H.2
+             P21  BIT   0A0H.1
+             P30  BIT   0B0H.0
+          I2S_S1  BIT   0BBH.7
+            SPIF  BIT   0CDH.7
+          T4CLKO  BIT   0DDH.4
+         IAP_TPS  DATA  0F5H
+             P02  BIT   080H.2
+             P11  BIT   090H.1
+             P20  BIT   0A0H.0
+            ESPI  BIT   0AFH.1
+          I2S_S0  BIT   0BBH.6
+         CLR_WDT  BIT   0C1H.4
+          T3CLKO  BIT   0DDH.0
+          CANICR  DATA  0F1H
+             P01  BIT   080H.1
+            PCON  DATA  087H
+          S1M0x6  BIT   08EH.5
+          T2CLKO  BIT   08FH.2
+             P10  BIT   090H.0
+            SBUF  DATA  099H
+            PCMP  BIT   0B5H.5
+       ADC_CONTR  DATA  0BCH
+             P00  BIT   080H.0
+          T1CLKO  BIT   08FH.1
+            EUSB  BIT   0AFH.7
+          INT4IF  BIT   0EFH.6
+          ICHECR  DATA  0F7H
+          T0CLKO  BIT   08FH.0
+            CPOL  BIT   0CEH.3
+          INT3IF  BIT   0EFH.5
+          INT2IF  BIT   0EFH.4
+            LVDF  BIT   087H.5
+            ELVD  BIT   0A8H.6
+           ?PSW1  DATA  0D1H
+         IDL_WDT  BIT   0C1H.3
+            DORD  BIT   0CEH.5
+          CMPCR2  DATA  0E7H
+          CMPCR1  DATA  0E6H
+            PDEN  BIT   0F4H.3
+            SPR1  BIT   0CEH.1
+         LIRTRIM  DATA  09EH
+            SPR0  BIT   0CEH.0
+            PX4H  BIT   0B6H.4
+           SWRST  BIT   0C7H.5
+             ?OV  BIT   0D0H.2
+            S4TI  BIT   0FDH.1
+            S3TI  BIT   0ACH.1
+       IAP_ADDRL  DATA  0C4H
+             ?SP  DATA  081H
+            S2TI  BIT   09AH.1
+              PS  BIT   0B8H.4
+          I2C_S1  BIT   0BAH.5
+            PS2M  BIT   0F4H.5
+            S4RI  BIT   0FDH.0
+            S3RI  BIT   0ACH.0
+            PX1H  BIT   0B7H.2
+          I2C_S0  BIT   0BAH.4
+          PCAN2L  BIT   0F1H.4
+            S2RI  BIT   09AH.0
+            PX0H  BIT   0B7H.0
+       IAP_ADDRH  DATA  0C3H
+            PS4H  BIT   0EEH.1
+            PI2S  BIT   0DFH.3
+         INVCMPO  BIT   0E7H.7
+            PS3H  BIT   0EEH.0
+            PS2H  BIT   0B6H.0
+            PT1H  BIT   0B7H.3
+          PCAN2H  BIT   0F1H.7
+              TI  BIT   098H.1
+            PT0H  BIT   0B7H.1
+            CPHA  BIT   0CEH.2
+       IAP_ADDRE  DATA  0F6H
+              CY  BIT   0D0H.7
+              RI  BIT   098H.0
+          ADCCFG  DATA  0DEH
+          CAN2EN  BIT   097H.2
+              IP  DATA  0B8H
+            PADC  BIT   0B8H.5
+              ES  BIT   0A8H.4
+            T4IF  BIT   0EFH.2
+         INTCLKO  DATA  08FH
+            T3IF  BIT   0EFH.1
+            T2IF  BIT   0EFH.0
+              TA  DATA  0AEH
+            IP3H  DATA  0EEH
+          CAN2IF  BIT   0F1H.6
+              PD  BIT   087H.1
+            IP2H  DATA  0B6H
+         ADC_RES  DATA  0BDH
+          CAN2IE  BIT   0F1H.5
+              DP  BIT   0F4H.1
+            DPL1  DATA  0E4H
+              DM  BIT   0F4H.0
+         IAP_CMD  DATA  0C5H
+            PI2C  BIT   0B5H.6
+              IE  DATA  0A8H
+            EADC  BIT   0A8H.5
+           P_SW3  DATA  0BBH
+            DPH1  DATA  0E5H
+           P_SW2  DATA  0BAH
+           P_SW1  DATA  0A2H
+           ENLVR  BIT   0FFH.6
+         T1_GATE  BIT   089H.7
+           PPWMB  BIT   0B5H.3
+           SPCTL  DATA  0CEH
+         T0_GATE  BIT   089H.3
+           WKTCL  DATA  0AAH
+           PPWMA  BIT   0B5H.2
+              P7  DATA  0F8H
+             ?EA  BIT   0A8H.7
+           PSPIH  BIT   0B6H.1
+            P7M1  DATA  0E1H
+              P6  DATA  0E8H
+              P5  DATA  0C8H
+            P6M1  DATA  0CBH
+            P7M0  DATA  0E2H
+           PUSBH  BIT   0B6H.7
+              P4  DATA  0C0H
+            P5M1  DATA  0C9H
+            P6M0  DATA  0CCH
+             ?AC  BIT   0D0H.6
+           WKTCH  DATA  0ABH
+              P3  DATA  0B0H
+            P4M1  DATA  0B3H
+            P5M0  DATA  0CAH
+           PRTCH  BIT   0EEH.2
+              P2  DATA  0A0H
+            P3M1  DATA  0B1H
+            P4M0  DATA  0B4H
+              P1  DATA  090H
+            P2M1  DATA  095H
+            P3M0  DATA  0B2H
+           PLINL  BIT   0F9H.0
+              P0  DATA  080H
+            P1M1  DATA  091H
+            P2M0  DATA  096H
+         USBCKS2  BIT   09DH.6
+           PLVDH  BIT   0B7H.6
+           T4_CT  BIT   0DDH.6
+            P1M0  DATA  092H
+            P0M1  DATA  093H
+           T3_CT  BIT   0DDH.2
+           ENUSB  BIT   0F4H.7
+             ACC  DATA  0E0H
+             PSW  DATA  0D0H
+             DPL  DATA  082H
+             DPH  DATA  083H
+               B  DATA  0F0H
+              SP  DATA  081H
+            PSW1  DATA  0D1H
+               Z  BIT   0D1H.1
+              EA  BIT   0A8H.7
+              OV  BIT   0D0H.2
+               P  BIT   0D0H.0
+              F0  BIT   0D0H.5
+             RS1  BIT   0D0H.4
+             RS0  BIT   0D0H.3
+              AC  BIT   0D0H.6
+;--- end of special function registers and bits.
+
+        PUBLIC        ota_isr_get?
+        PUBLIC        ota_isr_dispatch?
+        PUBLIC        ota_jump_to_app?
+        PUBLIC        ota_system_reset?
+        PUBLIC        ota_isr_unbind?
+        PUBLIC        ota_pre_jump_deinit?
+        PUBLIC        ota_isr_bind?
+        PUBLIC        ota_isr_table_init?
+
+; line 1: /*==============================================================================
+; line 2:  *  ota_jump.c  --  中断向量跳板 / BL->APP 跳转 / 软复位
+; line 3:  *  Platform : STC32G12K128 (Keil C251, Huge)
+; line 4:  *============================================================================*/
+; line 5: #include "ota_jump.h"
+; line 6: #include "log.h"
+; line 7: #include "bsp_timer.h"
+; line 8: #include "bsp_uart.h"
+; line 9: #include "flash_iap.h"
+; line 10: 
+; line 11: /* 向量跳板表：RAM 里 3 字节函数指针数组（Huge 模式）
+; line 12:  * 必须在 EA=1 之前由 ota_isr_table_init() 初始化 */
+; line 13: static void (*xdata s_isr[OTA_ISR_SLOT_NUM])(void);  /* 48*3B，必须 xdata */
+; line 14: 
+; line 15: static void isr_default(void)
+
+        RSEG       ?PR?OTA_JUMP
+        isr_default? PROC FAR
+; line 16: {
+; line 17:     /* 未绑定的中断：什么都不做，避免跑飞。调试期可在此点灯。 */
+; line 18: }
+        ERET     
+        ENDP
+        ota_isr_table_init? PROC FAR
+; line 19: 
+; line 20: void ota_isr_table_init(void)
+; line 21: {
+; line 22:     u8 i;
+; line 23:     for (i = 0; i < OTA_ISR_SLOT_NUM; i++) s_isr[i] = isr_default;
+        XRL      R7,R7
+;---- Variable 'i' assigned to Register 'R7' ----
+?C0004:
+        MOV      WR2,#WORD0 isr_default?
+        MOV      WR0,#WORD2 isr_default?
+        MOV      R5,#04H
+        MUL      R5,R7
+        ADD      WR4,#WORD0 s_isr
+        MOV      DPL,R5                         ; WORD0(DR56)=DPTR
+        MOV      DPH,R4                         ; WORD0(DR56)=DPTR
+        MOV      @DR56+0x2,WR2                  ; WORD0(DR56)=DPTR
+        MOV      @DR56,WR0                      ; WORD0(DR56)=DPTR
+        INC      R7,#01H
+        CMP      R7,#030H
+        JC       ?C0004
+; line 24: }
+        ERET     
+        ENDP
+        ota_isr_bind? PROC FAR
+; line 25: 
+; line 26: ota_ret_t ota_isr_bind(u8 irq_no, void (*isr)(void))
+        MOV      DR28,DR0
+;---- Variable 'isr' assigned to Register 'DR28' ----
+        MOV      R10,R11                        ; A=R11
+;---- Variable 'irq_no' assigned to Register 'R10' ----
+; line 27: {
+; line 28:     if (irq_no >= OTA_ISR_SLOT_NUM || isr == 0) return OTA_ERR_PARAM;
+        CMP      R10,#030H
+        JNC      ?C0007
+        CMP      DR28,#00H
+        JNE      ?C0006
+?C0007:
+        MOV      WR6,#01H
+        ERET     
+?C0006:
+; line 29:     s_isr[irq_no] = isr;
+        MOV      R7,#04H
+        MUL      R7,R10
+        ADD      WR6,#WORD0 s_isr
+        MOV      DPL,R7                         ; WORD0(DR56)=DPTR
+        MOV      DPH,R6                         ; WORD0(DR56)=DPTR
+        MOV      @DR56+0x2,WR30                 ; WORD0(DR56)=DPTR
+        MOV      @DR56,WR28                     ; WORD0(DR56)=DPTR
+; line 30:     return OTA_OK;
+        XRL      WR6,WR6
+; line 31: }
+        ERET     
+        ENDP
+        ota_isr_unbind? PROC FAR
+; line 32: 
+; line 33: ota_ret_t ota_isr_unbind(u8 irq_no)
+        MOV      R10,R11                        ; A=R11
+;---- Variable 'irq_no' assigned to Register 'R10' ----
+; line 34: {
+; line 35:     if (irq_no >= OTA_ISR_SLOT_NUM) return OTA_ERR_PARAM;
+        CMP      R10,#030H
+        JC       ?C0009
+        MOV      WR6,#01H
+        ERET     
+?C0009:
+; line 36:     s_isr[irq_no] = isr_default;
+        MOV      WR2,#WORD0 isr_default?
+        MOV      WR0,#WORD2 isr_default?
+        MOV      R7,#04H
+        MUL      R7,R10
+        ADD      WR6,#WORD0 s_isr
+        MOV      DPL,R7                         ; WORD0(DR56)=DPTR
+        MOV      DPH,R6                         ; WORD0(DR56)=DPTR
+        MOV      @DR56+0x2,WR2                  ; WORD0(DR56)=DPTR
+        MOV      @DR56,WR0                      ; WORD0(DR56)=DPTR
+; line 37:     return OTA_OK;
+        XRL      WR6,WR6
+; line 38: }
+        ERET     
+        ENDP
+        ota_isr_get? PROC FAR
+; line 39: 
+; line 40: void (*ota_isr_get(u8 irq_no))(void)
+        MOV      R10,R11                        ; A=R11
+;---- Variable 'irq_no' assigned to Register 'R10' ----
+; line 41: {
+; line 42:     if (irq_no >= OTA_ISR_SLOT_NUM) return 0;
+        CMP      R10,#030H
+        JC       ?C0011
+        SUB      DR4,DR4
+        ERET     
+?C0011:
+; line 43:     return s_isr[irq_no];
+        MOV      R3,#04H
+        MUL      R3,R10
+        ADD      WR2,#WORD0 s_isr
+        MOV      DPL,R3                         ; WORD0(DR56)=DPTR
+        MOV      DPH,R2                         ; WORD0(DR56)=DPTR
+        MOV      WR6,@DR56+0x2                  ; WORD0(DR56)=DPTR
+        MOV      WR4,@DR56                      ; WORD0(DR56)=DPTR
+; line 44: }
+        ERET     
+        ENDP
+        ota_isr_dispatch? PROC FAR
+; line 45: 
+; line 46: /* 供 Bootloader 的中断服务函数调用：查表并转发到 APP 注册的处理函数。
+; line 47:  * BL 侧的 stub 形如：
+; line 48:  *     void bl_isr_uart1(void) interrupt 4 { ota_isr_dispatch(4); }
+; line 49:  */
+; line 50: void ota_isr_dispatch(u8 irq_no)
+        MOV      R10,R11                        ; A=R11
+;---- Variable 'irq_no' assigned to Register 'R10' ----
+; line 51: {
+; line 52:     void (*fn)(void);
+; line 53:     if (irq_no >= OTA_ISR_SLOT_NUM) return;
+        CMP      R10,#030H
+        JNC      ?C0014
+; line 54:     fn = s_isr[irq_no];
+        MOV      R3,#04H
+        MUL      R3,R10
+        ADD      WR2,#WORD0 s_isr
+        MOV      DPL,R3                         ; WORD0(DR56)=DPTR
+        MOV      DPH,R2                         ; WORD0(DR56)=DPTR
+        MOV      WR6,@DR56+0x2                  ; WORD0(DR56)=DPTR
+        MOV      WR4,@DR56                      ; WORD0(DR56)=DPTR
+;---- Variable 'fn' assigned to Register 'DR4' ----
+; line 55:     if (fn != 0) fn();
+        CMP      DR4,#00H
+        JE       ?C0014
+        EJMP     @DR4
+; line 56: }
+?C0014:
+        ERET     
+        ENDP
+        ota_pre_jump_deinit? PROC FAR
+; line 57: 
+; line 58: void ota_pre_jump_deinit(void)
+; line 59: {
+; line 60:     ES  = 0;                 /* 关串口中断，防止跳转瞬间还有数据进来 */
+        CLR      ES
+; line 61:     ET0 = 0;                 /* 关时基中断                              */
+        CLR      ET0
+; line 62:     EA  = 0;
+        CLR      ?EA
+; line 63:     bsp_uart_tx_wait_idle();
+        EJMP     bsp_uart_tx_wait_idle?
+        ENDP
+        ota_jump_to_app? PROC FAR
+; line 64: }
+; line 65: 
+; line 66: ota_ret_t ota_jump_to_app(u32 app_base)
+        PUSH     DR12
+        MOV      DPTR,#WORD0 app_base?740
+        MOV      @DR56,WR4                      ; WORD0(DR56)=DPTR
+        MOV      @DR56+0x2,WR6                  ; WORD0(DR56)=DPTR
+; line 67: {
+; line 68:     void (*xdata entry)(void);
+; line 69:     u8 first;
+; line 70: 
+; line 71:     /* 入口必须在 APP 代码域内 */
+; line 72:     if (app_base < OTA_APP_CODE_BASE || app_base > OTA_APP_CODE_END)
+        MOV      WR6,#04000H
+        MOV      WR4,#0FFH
+        MOV      DPTR,#WORD0 app_base?740
+        MOV      WR14,@DR56+0x2                 ; WORD0(DR56)=DPTR
+        MOV      WR12,@DR56                     ; WORD0(DR56)=DPTR
+        CMP      DR12,DR4
+        JC       ?C0017
+        MOV      WR6,#0FFFFH
+        MOV      WR4,#0FFH
+        CMP      DR12,DR4
+        JLE      ?C0016
+?C0017:
+; line 73:     {
+; line 74:         LOG_E("JUMP", "bad entry 0x%lx", app_base);
+        MOV      DPTR,#WORD0 ?log_printf??BYTE-4
+        MOV      @DR56+0x2,WR14                 ; WORD0(DR56)=DPTR
+        MOV      @DR56,WR12                     ; WORD0(DR56)=DPTR
+        MOV      A,#01H                         ; A=R11
+        MOV      WR2,#WORD0 ?SC_0085
+        MOV      WR0,#WORD2 ?SC_0085
+        MOV      WR6,#WORD0 ?SC_0069
+        MOV      WR4,#WORD2 ?SC_0069
+        ECALL    log_printf?
+; line 75:         return OTA_ERR_ADDR;
+        MOV      WR6,#02H
+        LJMP     ?C0018
+; line 76:     }
+?C0016:
+; line 77: 
+; line 78:     /* 首字节合法性：挡住"空片"和"半截镜像"
+; line 79:      *
+; line 80:      *   ★ APP 入口 = OTA_APP_CODE_BASE 处放的是 C251 的 `?C_C51STARTUP`，
+; line 81:      *     不是 LJMP。实测（2026-10-25，C251 V5.60）：
+; line 82:      *         BL  ?C_C51STARTUP @0xFF0027: 75 84 01 7E 44 04 1F ...
+; line 83:      *         APP ?C_C51STARTUP @0xFF4000: 75 84 01 7E 44 04 1F ...   ← 完全一致
+; line 84:      *     硬件复位时是 FF:0000 的 LJMP 跳到 startup，而 BL 跳 APP 时
+; line 85:      *     **直接跳到 startup**，所以这里不该指望看到 0x02。
+; line 86:      *     （如果哪天 0xFF4000 又变成常量数据，build 会被 tools/check_layout.py 拦住）
+; line 87:      *
+; line 88:      *   这里只做最粗的合法性判断：
+; line 89:      *     0xFF = 空片；0x00 = 全零（擦除失败或残留）  -> 拒绝跳转
+; line 90:      *     其它 -> 允许，但把前 4 字节打出来供人工判读
+; line 91:      *   真正的镜像头 + CRC 校验在 ota_verify.c，P1 之后接上。
+; line 92:      */
+; line 93:     first = flash_iap_read_byte(app_base - OTA_PHYS_BASE);
+        MOV      DR4,DR12
+        SUB      WR4,#0FEH
+        ECALL    flash_iap_read_byte?
+        MOV      DPTR,#WORD0 first?741
+        MOVX     @DPTR,A                        ; A=R11
+; line 94:     if (first == 0xFF || first == 0x00)
+        CMP      R11,#0FFH                      ; A=R11
+        JE       ?C0020
+        MOV      DPTR,#WORD0 first?741
+        MOVX     A,@DPTR                        ; A=R11
+        JNZ      ?C0019
+?C0020:
+; line 95:     {
+; line 96:         LOG_E("JUMP", "app head=0x%x, blank/erased -> refuse", (u16)first);
+        MOV      DPTR,#WORD0 first?741
+        MOVX     A,@DPTR                        ; A=R11
+        MOVZ     WR6,R11                        ; A=R11
+        MOV      DPTR,#WORD0 ?log_printf??BYTE-2
+        MOV      @DR56,WR6                      ; WORD0(DR56)=DPTR
+        MOV      A,#01H                         ; A=R11
+        MOV      WR2,#WORD0 ?SC_0085
+        MOV      WR0,#WORD2 ?SC_0085
+        MOV      WR6,#WORD0 ?SC_0031
+        MOV      WR4,#WORD2 ?SC_0031
+        ECALL    log_printf?
+; line 97:         return OTA_ERR_VERIFY;
+        MOV      WR6,#0CH
+        LJMP     ?C0018
+; line 98:     }
+?C0019:
+; line 99:     LOG_I("JUMP", "app head: %x %x %x %x",
+; line 100:           (u16)first,
+; line 101:           (u16)flash_iap_read_byte(app_base - OTA_PHYS_BASE + 1UL),
+; line 102:           (u16)flash_iap_read_byte(app_base - OTA_PHYS_BASE + 2UL),
+; line 103:           (u16)flash_iap_read_byte(app_base - OTA_PHYS_BASE + 3UL));
+        MOV      DPTR,#WORD0 app_base?740
+        MOV      WR6,@DR56+0x2                  ; WORD0(DR56)=DPTR
+        MOV      WR4,@DR56                      ; WORD0(DR56)=DPTR
+        SUB      WR4,#0FDH
+        SUB      DR4,#0FFFFH
+        ECALL    flash_iap_read_byte?
+        MOVZ     WR14,R11                       ; A=R11
+        MOV      DPTR,#WORD0 app_base?740
+        MOV      WR6,@DR56+0x2                  ; WORD0(DR56)=DPTR
+        MOV      WR4,@DR56                      ; WORD0(DR56)=DPTR
+        SUB      WR4,#0FDH
+        SUB      DR4,#0FFFEH
+        ECALL    flash_iap_read_byte?
+        MOVZ     WR12,R11                       ; A=R11
+        MOV      DPTR,#WORD0 app_base?740
+        MOV      WR6,@DR56+0x2                  ; WORD0(DR56)=DPTR
+        MOV      WR4,@DR56                      ; WORD0(DR56)=DPTR
+        SUB      WR4,#0FDH
+        SUB      DR4,#0FFFDH
+        ECALL    flash_iap_read_byte?
+        MOVZ     WR8,R11                        ; A=R11
+        MOV      DPTR,#WORD0 first?741
+        MOVX     A,@DPTR                        ; A=R11
+        MOVZ     WR10,R11                       ; A=R11
+        MOV      DPTR,#WORD0 ?log_printf??BYTE-2
+        MOV      @DR56,WR10                     ; WORD0(DR56)=DPTR
+        MOV      A,#03H                         ; A=R11
+        MOV      WR2,#WORD0 ?SC_0085
+        MOV      WR0,#WORD2 ?SC_0085
+        MOV      WR6,#WORD0 ?SC_0009
+        MOV      WR4,#WORD2 ?SC_0009
+        MOV      DPTR,#WORD0 ?log_printf??BYTE-8
+        MOV      @DR56,WR8                      ; WORD0(DR56)=DPTR
+        MOV      DPTR,#WORD0 ?log_printf??BYTE-6
+        MOV      @DR56,WR12                     ; WORD0(DR56)=DPTR
+        MOV      DPTR,#WORD0 ?log_printf??BYTE-4
+        MOV      @DR56,WR14                     ; WORD0(DR56)=DPTR
+        ECALL    log_printf?
+; line 104: 
+; line 105:     LOG_I("JUMP", "-> 0x%lx", app_base);
+        MOV      DPTR,#WORD0 app_base?740
+        MOV      WR6,@DR56+0x2                  ; WORD0(DR56)=DPTR
+        MOV      WR4,@DR56                      ; WORD0(DR56)=DPTR
+        MOV      DPTR,#WORD0 ?log_printf??BYTE-4
+        MOV      @DR56+0x2,WR6                  ; WORD0(DR56)=DPTR
+        MOV      @DR56,WR4                      ; WORD0(DR56)=DPTR
+        MOV      A,#03H                         ; A=R11
+        MOV      WR2,#WORD0 ?SC_0085
+        MOV      WR0,#WORD2 ?SC_0085
+        MOV      WR6,#WORD0 ?SC_0000
+        MOV      WR4,#WORD2 ?SC_0000
+        ECALL    log_printf?
+; line 106:     ota_pre_jump_deinit();
+        ECALL    ota_pre_jump_deinit?
+; line 107: 
+; line 108:     /* Huge 模式：函数指针为 3 字节，可直接承载 24 位地址。
+; line 109:      * 注意：不要写成 LJMP 风格的 16 位强转，否则跳飞。 */
+; line 110:     entry = (void (*)(void))app_base;
+        MOV      DPTR,#WORD0 app_base?740
+        MOV      WR6,@DR56+0x2                  ; WORD0(DR56)=DPTR
+        MOV      WR4,@DR56                      ; WORD0(DR56)=DPTR
+;---- Variable 'entry' assigned to Register 'DR4' ----
+; line 111:     entry();
+        ECALL    @DR4
+; line 112: 
+; line 113:     return OTA_ERR_UNKNOWN;      /* 正常不会到这里 */
+        MOV      WR6,#0FFH
+; line 114: }
+?C0018:
+        POP      DR12
+        ERET     
+        ENDP
+        ota_system_reset? PROC FAR
+; line 115: 
+; line 116: void ota_system_reset(u16 delay_ms)
+;---- Variable 'delay_ms' assigned to Register 'WR6' ----
+; line 117: {
+; line 118:     if (delay_ms) bsp_timer_delay_ms(delay_ms);
+        ORL      WR6,WR6
+        JE       ?C0021
+        ECALL    bsp_timer_delay_ms?
+?C0021:
+; line 119: 
+; line 120:     /* TODO(核对手册) STC32G IAP_CONTR 的软件复位位（STC8 家族为 bit5=SWRST，
+; line 121:      * bit6=SWBS 选择复位后从哪块启动）。确认前先用"停止喂狗等看门狗溢出"兜底。 */
+; line 122:     IAP_CONTR = 0x20;            /* 触发软复位 */
+        MOV      IAP_CONTR,#020H
+; line 123: 
+; line 124:     /* 若上面未生效（位定义不同），看门狗会兜底复位 */
+; line 125:     for (;;) { }
+?C0024:
+        SJMP     ?C0024
+        ENDP
+; line 126: }
+
+        END
+

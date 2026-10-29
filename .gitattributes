@@ -1,0 +1,11 @@
+# 统一换行符，避免 Windows/Linux 协作时整文件 diff
+* text=auto eol=lf
+
+# Keil 工程文件与 hex 保持 CRLF（Windows 工具链习惯）
+*.uvproj  text eol=crlf
+*.uvopt   text eol=crlf
+*.hex     text eol=crlf
+
+# 二进制
+*.bin     binary
+*.exe     binary

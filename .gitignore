@@ -1,0 +1,63 @@
+# ── 编译产物（可由 build_local.sh 重新生成，一律不入库） ──────────────
+tools/_out_app/
+tools/_out_bl/
+tools/_out_combined.hex
+build/*.bin
+!build/fw_v0_8_3_ota.bin
+build/*.hex
+!build/step_dl_v0_8_2_blfix_BL_APP.hex
+
+# Keil C251 / L251 中间件
+*.LST
+*.lst
+*.OBJ
+*.obj
+*.M51
+*.m51
+*.OMF
+*.omf
+*.SBR
+*.sbr
+*.lnp
+*.build_log.htm
+*.dep
+*.__i
+*._ia
+*.__x
+*.__y
+Project/APP/Objects/
+Project/APP/Listings/
+Project/Bootloader/Objects/
+Project/Bootloader/Listings/
+Project/Bootloader/Bootloader.uvgui.*
+Project/APP/*.uvgui.*
+
+# ── 运行期与调试产物 ─────────────────────────────────────────────────
+logs/
+backup/
+*.log
+!docs/**/*.log
+
+# ── 内部工作区（含个人路径与本地上下文），不对外 ─────────────────────
+.workbuddy/
+l1.bin
+
+# ── 厂商手册（有版权，请自行下载，来源见 README） ────────────────────
+*.pdf
+Air724 AT命令手册/
+
+# ── 系统垃圾 ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+__pycache__/
+*.pyc
+
+# ── 真实部署凭据（模板见 APP/app_secrets.h.example） ─────────────────
+APP/app_secrets.h
+
+# ── 大件二进制与临时产物（可由脚本重新生成） ─────────────────────────
+tools/SerialBridge.exe
+tools/_tmp/
+tools/_asm/
+Project/APP/_deprecated/
